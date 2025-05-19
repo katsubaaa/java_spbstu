@@ -9,29 +9,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/notifications")
+@RequestMapping("/api/notifications")
 public class NotificationController {
-	
-    private final NotificationService notificationService;
 
     @Autowired
-    public NotificationController(NotificationService notificationService) {
-        this.notificationService = notificationService;
+    private NotificationService notificationService;
+
+    @PostMapping
+    public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
+        return ResponseEntity.ok(notificationService.create(notification));
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Notification>> getAll(@PathVariable Long userId) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Notification>> getAllUserNotifications(@PathVariable Long userId) {
         return ResponseEntity.ok(notificationService.getAllByUser(userId));
     }
 
-    @GetMapping("/{userId}/pending")
-    public ResponseEntity<List<Notification>> getPending(@PathVariable Long userId) {
+    @GetMapping("/user/{userId}/unread")
+    public ResponseEntity<List<Notification>> getUnreadUserNotifications(@PathVariable Long userId) {
         return ResponseEntity.ok(notificationService.getPendingByUser(userId));
     }
-
-    @PostMapping
-    public ResponseEntity<Notification> create(@RequestBody Notification notification) {
-        return ResponseEntity.status(201).body(notificationService.create(notification));
-    }
-	
 }

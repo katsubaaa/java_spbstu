@@ -1,15 +1,16 @@
 package javaproject.taskmanager.repository;
 
 import javaproject.taskmanager.model.Notification;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface NotificationRepository {
+@Repository
+public interface NotificationRepository extends JpaRepository<Notification, Long> {
 	
-    Notification save(Notification notification);
+    List<Notification> findByUserId(Long userId);
 	
-    List<Notification> findAllByUserId(Long userId);
-	
-    List<Notification> findPendingByUserId(Long userId);
+    List<Notification> findByUserIdAndReadFalse(Long userId);
 	
 }

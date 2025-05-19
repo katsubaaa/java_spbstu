@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -26,7 +27,8 @@ class UserControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         
-        userController = new UserController(userService);
+        userController = new UserController();
+        ReflectionTestUtils.setField(userController, "userService", userService);
     }
 
     @Test
@@ -39,7 +41,7 @@ class UserControllerTest {
 
         ResponseEntity<User> response = userController.register(user);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1L, response.getBody().getId());
         assertEquals("testuser", response.getBody().getUsername());

@@ -1,7 +1,7 @@
-package javaproject.taskmanager.service.inmemory;
+package javaproject.taskmanager.service.h2;
 
 import javaproject.taskmanager.model.Notification;
-import javaproject.taskmanager.repository.inmemory.InMemoryNotificationRepository;
+import javaproject.taskmanager.repository.NotificationRepository;
 import javaproject.taskmanager.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Profile("inmemory")
-public class InMemoryNotificationService implements NotificationService{
+@Profile("db")
+public class NotificationServiceH2 implements NotificationService {
 	
-    @Autowired InMemoryNotificationRepository notificationRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Override
     public Notification create(Notification notification) {
@@ -22,12 +23,12 @@ public class InMemoryNotificationService implements NotificationService{
 
     @Override
     public List<Notification> getAllByUser(Long userId) {
-        return notificationRepository.findAllByUserId(userId);
+        return notificationRepository.findByUserId(userId);
     }
 
     @Override
     public List<Notification> getPendingByUser(Long userId) {
-        return notificationRepository.findPendingByUserId(userId);
+        return notificationRepository.findByUserIdAndReadFalse(userId);
     }
 	
-}
+} 

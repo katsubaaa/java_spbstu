@@ -1,7 +1,7 @@
-package javaproject.taskmanager.service.inmemory;
+package javaproject.taskmanager.service.h2;
 
 import javaproject.taskmanager.model.Task;
-import javaproject.taskmanager.repository.inmemory.InMemoryTaskRepository;
+import javaproject.taskmanager.repository.TaskRepository;
 import javaproject.taskmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Profile("inmemory")
-public class InMemoryTaskService implements TaskService{
+@Profile("db")
+public class TaskServiceH2 implements TaskService {
 	
-    @Autowired InMemoryTaskRepository taskRepository;
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Override
     public Task createTask(Task task) {
@@ -22,12 +23,12 @@ public class InMemoryTaskService implements TaskService{
 
     @Override
     public List<Task> getAllUserTasks(Long userId) {
-        return taskRepository.findAllByUserId(userId);
+        return taskRepository.findByUserIdAndDeletedFalse(userId);
     }
 
     @Override
     public List<Task> getPendingUserTasks(Long userId) {
-        return taskRepository.findPendingByUserId(userId);
+        return taskRepository.findByUserIdAndDeletedFalseAndCompletedFalse(userId);
     }
 
     @Override
@@ -35,4 +36,4 @@ public class InMemoryTaskService implements TaskService{
         taskRepository.markDeleted(taskId);
     }
 	
-}
+} 

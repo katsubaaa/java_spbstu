@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -30,7 +31,8 @@ class NotificationControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         
-        notificationController = new NotificationController(notificationService);
+        notificationController = new NotificationController();
+        ReflectionTestUtils.setField(notificationController, "notificationService", notificationService);
         
         notification1 = new Notification(1L, "Notification 1");
         notification1.setId(1L);
@@ -43,11 +45,11 @@ class NotificationControllerTest {
     }
 
     @Test
-    void getAll_ShouldReturnAllNotifications() {
+    void getAllUserNotifications_ShouldReturnAllNotifications() {
         List<Notification> expectedNotifications = Arrays.asList(notification1, notification2);
         when(notificationService.getAllByUser(1L)).thenReturn(expectedNotifications);
 
-        ResponseEntity<List<Notification>> response = notificationController.getAll(1L);
+        ResponseEntity<List<Notification>> response = notificationController.getAllUserNotifications(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedNotifications, response.getBody());
@@ -55,11 +57,11 @@ class NotificationControllerTest {
     }
 
     @Test
-    void getPending_ShouldReturnPendingNotifications() {
+    void getUnreadUserNotifications_ShouldReturnPendingNotifications() {
         List<Notification> expectedNotifications = Arrays.asList(notification1);
         when(notificationService.getPendingByUser(1L)).thenReturn(expectedNotifications);
 
-        ResponseEntity<List<Notification>> response = notificationController.getPending(1L);
+        ResponseEntity<List<Notification>> response = notificationController.getUnreadUserNotifications(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedNotifications, response.getBody());
@@ -67,13 +69,13 @@ class NotificationControllerTest {
     }
 
     @Test
-    void create_ShouldReturnCreatedNotification() {
+    void createNotification_ShouldReturnCreatedNotification() {
         Notification newNotification = new Notification(1L, "New Notification");
         when(notificationService.create(newNotification)).thenReturn(newNotification);
 
-        ResponseEntity<Notification> response = notificationController.create(newNotification);
+        ResponseEntity<Notification> response = notificationController.createNotification(newNotification);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(newNotification, response.getBody());
         verify(notificationService, times(1)).create(newNotification);
     }

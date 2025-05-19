@@ -1,7 +1,7 @@
 package javaproject.taskmanager.repository.inmemory;
 
 import javaproject.taskmanager.model.Notification;
-import javaproject.taskmanager.repository.NotificationRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,12 +11,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Repository
-public class InMemoryNotificationRepository implements NotificationRepository {
+@Profile("inmemory")
+public class InMemoryNotificationRepository {
 
     private final Map<Long, Notification> notifications = new ConcurrentHashMap<>();
     private final AtomicLong idCounter = new AtomicLong(1);
 
-    @Override
     public Notification save(Notification notification) {
         if (notification.getId() == null) {
             notification.setId(idCounter.getAndIncrement());
@@ -25,14 +25,12 @@ public class InMemoryNotificationRepository implements NotificationRepository {
         return notification;
     }
 
-    @Override
     public List<Notification> findAllByUserId(Long userId) {
         return notifications.values().stream()
                 .filter(notification -> notification.getUserId().equals(userId))
                 .collect(Collectors.toList());
     }
 
-    @Override
     public List<Notification> findPendingByUserId(Long userId) {
         return notifications.values().stream()
                 .filter(notification -> notification.getUserId().equals(userId))

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -30,7 +31,8 @@ class TaskControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         
-        taskController = new TaskController(taskService);
+        taskController = new TaskController();
+        ReflectionTestUtils.setField(taskController, "taskService", taskService);
         
         LocalDateTime targetDate = LocalDateTime.now().plusDays(1);
         task1 = new Task(1L, "Task 1", "Description 1", targetDate);
@@ -42,11 +44,11 @@ class TaskControllerTest {
     }
 
     @Test
-    void getAllTasks_ShouldReturnTasksFromService() {
+    void getUserTasks_ShouldReturnTasksFromService() {
         List<Task> expectedTasks = Arrays.asList(task1, task2);
         when(taskService.getAllUserTasks(1L)).thenReturn(expectedTasks);
 
-        ResponseEntity<List<Task>> response = taskController.getAllTasks(1L);
+        ResponseEntity<List<Task>> response = taskController.getUserTasks(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedTasks, response.getBody());
@@ -54,11 +56,11 @@ class TaskControllerTest {
     }
 
     @Test
-    void getPendingTasks_ShouldReturnPendingTasksFromService() {
+    void getPendingUserTasks_ShouldReturnPendingTasksFromService() {
         List<Task> expectedTasks = Arrays.asList(task1);
         when(taskService.getPendingUserTasks(1L)).thenReturn(expectedTasks);
 
-        ResponseEntity<List<Task>> response = taskController.getPendingTasks(1L);
+        ResponseEntity<List<Task>> response = taskController.getPendingUserTasks(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedTasks, response.getBody());
@@ -72,7 +74,7 @@ class TaskControllerTest {
 
         ResponseEntity<Task> response = taskController.createTask(newTask);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(newTask, response.getBody());
         verify(taskService, times(1)).createTask(newTask);
     }
