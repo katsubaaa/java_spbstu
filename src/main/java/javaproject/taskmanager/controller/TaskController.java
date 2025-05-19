@@ -9,29 +9,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api/tasks")
 public class TaskController {
 	
-    private final TaskService taskService;
-
     @Autowired
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
+    private TaskService taskService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Task>> getAllTasks(@PathVariable Long userId) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Task>> getUserTasks(@PathVariable Long userId) {
         return ResponseEntity.ok(taskService.getAllUserTasks(userId));
     }
 
-    @GetMapping("/{userId}/pending")
-    public ResponseEntity<List<Task>> getPendingTasks(@PathVariable Long userId) {
+    @GetMapping("/user/{userId}/pending")
+    public ResponseEntity<List<Task>> getPendingUserTasks(@PathVariable Long userId) {
         return ResponseEntity.ok(taskService.getPendingUserTasks(userId));
     }
 
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        return ResponseEntity.status(201).body(taskService.createTask(task));
+        return ResponseEntity.ok(taskService.createTask(task));
     }
 
     @DeleteMapping("/{taskId}")

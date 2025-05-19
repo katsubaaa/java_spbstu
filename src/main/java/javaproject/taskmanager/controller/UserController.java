@@ -6,27 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
-	
-    private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
-        return ResponseEntity.status(201).body(userService.register(user));
+        return ResponseEntity.ok(userService.register(user));
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<User> login(@RequestParam String username) {
-        return userService.login(username)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(404).build());
+    @GetMapping("/login/{username}")
+    public ResponseEntity<User> login(@PathVariable String username) {
+        Optional<User> user = userService.login(username);
+        return user.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-	
 }

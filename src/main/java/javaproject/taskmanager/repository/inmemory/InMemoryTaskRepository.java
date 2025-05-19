@@ -1,7 +1,7 @@
 package javaproject.taskmanager.repository.inmemory;
 
 import javaproject.taskmanager.model.Task;
-import javaproject.taskmanager.repository.TaskRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,12 +11,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Repository
-public class InMemoryTaskRepository implements TaskRepository {
+@Profile("inmemory")
+public class InMemoryTaskRepository {
 
     private final Map<Long, Task> tasks = new ConcurrentHashMap<>();
     private final AtomicLong idCounter = new AtomicLong(1);
 
-    @Override
     public Task save(Task task) {
         if (task.getId() == null) {
             task.setId(idCounter.getAndIncrement());
@@ -25,7 +25,6 @@ public class InMemoryTaskRepository implements TaskRepository {
         return task;
     }
 
-    @Override
     public List<Task> findAllByUserId(Long userId) {
         return tasks.values().stream()
                 .filter(task -> task.getUserId().equals(userId))
@@ -33,7 +32,6 @@ public class InMemoryTaskRepository implements TaskRepository {
                 .collect(Collectors.toList());
     }
 
-    @Override
     public List<Task> findPendingByUserId(Long userId) {
         return tasks.values().stream()
                 .filter(task -> task.getUserId().equals(userId))
@@ -42,7 +40,6 @@ public class InMemoryTaskRepository implements TaskRepository {
                 .collect(Collectors.toList());
     }
 
-    @Override
     public void markDeleted(Long taskId) {
         Task task = tasks.get(taskId);
         if (task != null) {

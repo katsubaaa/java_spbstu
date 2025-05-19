@@ -1,7 +1,7 @@
-package javaproject.taskmanager.service.inmemory;
+package javaproject.taskmanager.service.h2;
 
 import javaproject.taskmanager.model.User;
-import javaproject.taskmanager.repository.inmemory.InMemoryUserRepository;
+import javaproject.taskmanager.repository.UserRepository;
 import javaproject.taskmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@Profile("inmemory")
-public class InMemoryUserService implements UserService {
+@Profile("db")
+public class UserServiceH2 implements UserService {
 	
-    @Autowired InMemoryUserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public User register(User user) {
@@ -25,4 +26,4 @@ public class InMemoryUserService implements UserService {
         return userRepository.findByUsername(username);
     }
 	
-}
+} 
