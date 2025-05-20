@@ -5,7 +5,7 @@ COPY pom.xml .
 COPY src src
 
 # Build the application
-RUN mvn install -DskipTests
+RUN mvn install
 
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app

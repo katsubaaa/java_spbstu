@@ -1,4 +1,4 @@
-package javaproject.taskmanager.service.h2;
+package javaproject.taskmanager.service.db;
 
 import javaproject.taskmanager.model.Notification;
 import javaproject.taskmanager.repository.NotificationRepository;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @Profile("db")
-public class NotificationServiceH2 implements NotificationService {
+public class NotificationServiceDB implements NotificationService {
 	
     @Autowired
     private NotificationRepository notificationRepository;
