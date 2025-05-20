@@ -1,4 +1,4 @@
-package javaproject.taskmanager.service.h2;
+package javaproject.taskmanager.service.db;
 
 import javaproject.taskmanager.model.Task;
 import javaproject.taskmanager.repository.TaskRepository;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @Profile("db")
-public class TaskServiceH2 implements TaskService {
+public class TaskServiceDB implements TaskService {
 	
     @Autowired
     private TaskRepository taskRepository;
@@ -23,12 +23,12 @@ public class TaskServiceH2 implements TaskService {
 
     @Override
     public List<Task> getAllUserTasks(Long userId) {
-        return taskRepository.findByUserIdAndDeletedFalse(userId);
+        return taskRepository.findByUserIdAndDeletedFalseOrderByCreatedAtDesc(userId);
     }
 
     @Override
     public List<Task> getPendingUserTasks(Long userId) {
-        return taskRepository.findByUserIdAndDeletedFalseAndCompletedFalse(userId);
+        return taskRepository.findByUserIdAndCompletedFalseAndDeletedFalseOrderByCreatedAtDesc(userId);
     }
 
     @Override

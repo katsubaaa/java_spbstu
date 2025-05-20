@@ -1,4 +1,4 @@
-package javaproject.taskmanager.service.h2;
+package javaproject.taskmanager.service.db;
 
 import javaproject.taskmanager.model.User;
 import javaproject.taskmanager.repository.UserRepository;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 @Profile("db")
-public class UserServiceH2 implements UserService {
+public class UserServiceDB implements UserService {
 	
     @Autowired
     private UserRepository userRepository;
