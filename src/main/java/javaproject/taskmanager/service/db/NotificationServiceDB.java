@@ -18,7 +18,11 @@ public class NotificationServiceDB implements NotificationService {
 
     @Override
     public Notification create(Notification notification) {
-        return notificationRepository.save(notification);
+        // Method kept for API compatibility, but notifications should now
+        // be created via the message broker listener
+        throw new UnsupportedOperationException(
+            "Direct notification creation is disabled. Notifications are created via message broker only."
+        );
     }
 
     @Override

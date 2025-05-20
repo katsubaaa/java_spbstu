@@ -11,9 +11,14 @@ services:
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
     depends_on:
       - db
       - redis
+      - rabbitmq
 
   db:
     image: postgres:14-alpine
@@ -33,6 +38,15 @@ services:
     volumes:
       - redis-data:/data
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
 volumes:
   postgres-data: 
   redis-data: 
+  rabbitmq-data: 
