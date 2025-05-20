@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -63,6 +64,11 @@ public class TaskServiceTest {
             public void deleteTask(Long taskId) {
                 // Not implemented for this test
             }
+            
+            @Override
+            public CompletableFuture<Task> completeTaskAsync(Long taskId) {
+                return null; // Not implemented for this test
+            }
         };
         
         // Act
@@ -110,6 +116,11 @@ public class TaskServiceTest {
             public void deleteTask(Long taskId) {
                 // Not implemented for this test
             }
+            
+            @Override
+            public CompletableFuture<Task> completeTaskAsync(Long taskId) {
+                return null; // Not implemented for this test
+            }
         };
         
         // Act
@@ -152,6 +163,11 @@ public class TaskServiceTest {
             @Override
             public void deleteTask(Long taskId) {
                 // Not implemented for this test
+            }
+            
+            @Override
+            public CompletableFuture<Task> completeTaskAsync(Long taskId) {
+                return null; // Not implemented for this test
             }
         };
         

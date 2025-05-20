@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Profile("db")
@@ -46,6 +48,22 @@ public class TaskServiceDB implements TaskService {
     @CacheEvict(value = "tasks", allEntries = true)
     public void deleteTask(Long taskId) {
         taskRepository.markDeleted(taskId);
+    }
+    
+    @Override
+    @Async("taskExecutor")
+    @CacheEvict(value = "tasks", allEntries = true)
+    public CompletableFuture<Task> completeTaskAsync(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found: " + taskId));
+        
+        task.setCompleted(true);
+        Task updatedTask = taskRepository.save(task);
+        
+        // Send a message about the task completion
+        messagingService.sendTaskCompletedMessage(updatedTask);
+        
+        return CompletableFuture.completedFuture(updatedTask);
     }
 	
 } 

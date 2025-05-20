@@ -21,16 +21,32 @@ public class NotificationMessageListener {
     }
 
     @RabbitListener(queues = RabbitMQConfig.TASK_QUEUE)
-    public void handleTaskCreatedMessage(TaskMessage message) {
-        if ("CREATED".equals(message.getAction())) {
-            Notification notification = Notification.builder()
-                .userId(message.getUserId())
-                .message("New task created: " + message.getTitle())
-                .createdAt(LocalDateTime.now())
-                .read(false)
-                .build();
+    public void handleTaskMessage(TaskMessage message) {
+        Notification notification;
+        
+        switch (message.getAction()) {
+            case "CREATED":
+                notification = Notification.builder()
+                    .userId(message.getUserId())
+                    .message("New task created: " + message.getTitle())
+                    .createdAt(LocalDateTime.now())
+                    .read(false)
+                    .build();
+                break;
                 
-            notificationRepository.save(notification);
+            case "COMPLETED":
+                notification = Notification.builder()
+                    .userId(message.getUserId())
+                    .message("Task completed: " + message.getTitle())
+                    .createdAt(LocalDateTime.now())
+                    .read(false)
+                    .build();
+                break;
+                
+            default:
+                return; // Unknown action, ignore
         }
+        
+        notificationRepository.save(notification);
     }
 } 

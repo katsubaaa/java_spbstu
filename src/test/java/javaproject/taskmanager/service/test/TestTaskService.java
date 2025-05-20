@@ -1,4 +1,4 @@
-package javaproject.taskmanager.service.db;
+package javaproject.taskmanager.service.test;
 
 import javaproject.taskmanager.model.Task;
 import javaproject.taskmanager.service.TaskService;
@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Profile("test")
-public class TaskServiceDB implements TaskService {
+public class TestTaskService implements TaskService {
     
     private final List<Task> tasks = new ArrayList<>();
     
@@ -44,5 +45,16 @@ public class TaskServiceDB implements TaskService {
             .filter(t -> t.getId().equals(taskId))
             .findFirst()
             .ifPresent(task -> task.setDeleted(true));
+    }
+    
+    @Override
+    public CompletableFuture<Task> completeTaskAsync(Long taskId) {
+        Task task = tasks.stream()
+            .filter(t -> t.getId().equals(taskId))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Task not found: " + taskId));
+            
+        task.setCompleted(true);
+        return CompletableFuture.completedFuture(task);
     }
 } 
