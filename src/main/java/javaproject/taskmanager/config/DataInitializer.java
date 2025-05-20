@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Configuration
 @Profile("db")
@@ -25,6 +26,12 @@ public class DataInitializer {
             @Autowired NotificationRepository notificationRepository) {
         
         return args -> {
+            // Check if sample data already exists
+            if (userRepository.count() > 0) {
+                System.out.println("Sample data already exists, skipping initialization.");
+                return;
+            }
+            
             // Create sample users
             User user1 = userRepository.save(User.builder()
                     .username("user1")
