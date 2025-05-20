@@ -2,6 +2,7 @@ package javaproject.taskmanager.service.db;
 
 import javaproject.taskmanager.model.Task;
 import javaproject.taskmanager.repository.TaskRepository;
+import javaproject.taskmanager.service.MessagingService;
 import javaproject.taskmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -17,11 +18,16 @@ public class TaskServiceDB implements TaskService {
 	
     @Autowired
     private TaskRepository taskRepository;
+    
+    @Autowired
+    private MessagingService messagingService;
 
     @Override
     @CacheEvict(value = "tasks", key = "'user_' + #task.userId")
     public Task createTask(Task task) {
-        return taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
+        messagingService.sendTaskCreatedMessage(savedTask);
+        return savedTask;
     }
 
     @Override
