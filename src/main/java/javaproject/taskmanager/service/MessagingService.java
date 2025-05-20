@@ -5,4 +5,5 @@ import javaproject.taskmanager.model.Task;
 
 public interface MessagingService {
     void sendTaskCreatedMessage(Task task);
+    void sendTaskCompletedMessage(Task task);
 } 

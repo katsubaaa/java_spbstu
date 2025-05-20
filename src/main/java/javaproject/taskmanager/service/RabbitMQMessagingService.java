@@ -35,4 +35,23 @@ public class RabbitMQMessagingService implements MessagingService {
             message
         );
     }
+    
+    @Override
+    public void sendTaskCompletedMessage(Task task) {
+        TaskMessage message = new TaskMessage(
+            task.getId(),
+            task.getUserId(),
+            task.getTitle(),
+            task.getDescription(),
+            task.getCreatedAt(),
+            task.getTargetDate(),
+            "COMPLETED"
+        );
+        
+        rabbitTemplate.convertAndSend(
+            RabbitMQConfig.TASK_EXCHANGE,
+            RabbitMQConfig.TASK_ROUTING_KEY,
+            message
+        );
+    }
 } 

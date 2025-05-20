@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @Profile("test")
-public class NotificationServiceDB implements NotificationService {
+public class NotificationServiceDBTest implements NotificationService {
     
     private final List<Notification> notifications = new ArrayList<>();
     

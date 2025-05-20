@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -48,4 +49,13 @@ public class InMemoryTaskRepository {
         }
     }
     
+    /**
+     * Find a task by its ID
+     * @param id the ID of the task to find
+     * @return an Optional containing the task if found, or empty if not found
+     */
+    public Optional<Task> findById(Long id) {
+        Task task = tasks.get(id);
+        return Optional.ofNullable(task);
+    }
 } 

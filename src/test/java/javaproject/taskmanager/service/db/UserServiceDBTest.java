@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 @Profile("test")
-public class UserServiceDB implements UserService {
+public class UserServiceDBTest implements UserService {
     
     private final List<User> users = new ArrayList<>();
     
